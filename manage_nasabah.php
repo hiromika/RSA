@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">Manage user</h1>
+        <h1 class="m-0">Manage Nasabah</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -22,7 +22,7 @@
          
 	<div class="card">
 	  <div class="card-header">
-	    <button type="button"class="btn btn-success pull-right" data-toggle="modal" id="btntambah">Insert user</button>
+	    <button type="button"class="btn btn-success pull-right" data-toggle="modal" id="btntambah">Insert Nasabah</button>
 	  </div>
 	  <!-- /.card-header -->
 	  <div class="card-body">
@@ -32,31 +32,30 @@
 					<tr>
 						<th>No</th>
 						<th style="display: none;">id</th>
-						<th>Username</th>
-						<th>Level</th>
+						<th>Code Nasabah</th>
+						<th>Name</th>
+						<th>Email</th>
 						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 				<?php 
 					$no = 1;
-					$sql = "SELECT * FROM tb_user WHERE level = 1";
+					$sql = "SELECT * FROM tb_user WHERE level = 2";
 					$query  = mysqli_query($conn,$sql);
 					while ($data = mysqli_fetch_array($query)) { ?>
 					<tr>
 						<td><?php echo $no++; ?></td>
 						<td style="display: none;"><?php echo $data['id']; ?></td>
+						<td><?php echo $data['kode_nasabah'] ?></td>
 						<td><?php echo $data['username'] ?></td>
-						<td><?php if ($data['level'] == 1) {
-							echo 'Admin';
-							} 
-						?></td>
+						<td><?php echo $data['email'] ?></td>
 						<td><a href="" class="btn btn-success btn-xs btnedit" data-toggle="modal" title="">Edit</a>&nbsp
-						<a href="proses_user.php?kode=3&id=<?php echo $data['id'];?>" class="btn btn-danger btn-xs" onclick="return confirm('Apakah Anda Yakin.. ?');" title="">Delete</a></td>
+						<a href="proses_nasabah.php?kode=3&id=<?php echo $data['id'];?>" class="btn btn-danger btn-xs" onclick="return confirm('Apakah Anda Yakin.. ?');" title="">Delete</a></td>
 					</tr>
 				<?php
 					}
-				 ?>
+				?>
 				</tbody>
 			</table>
 		</div>
@@ -69,24 +68,22 @@
 	    <!-- Modal content-->
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h4 class="modal-title">Add user</h4>
+	        <h4 class="modal-title">Add Nasabah</h4>
 	        <button type="button" class="close" data-dismiss="modal">&times;</button>
 	      </div>
 	      <div class="modal-body">
-		    <form action="proses_user.php?kode=1&id=" method="POST" class="form" accept-charset="utf-8">
+		    <form action="proses_nasabah.php?kode=1&id=" method="POST" class="form" accept-charset="utf-8">
 				<div class="form-group">
-					<label> Username :</label>
+					<label> Code Nasabah :</label>
+					<input type="text" class="form-control" name="kode_nasabah" value="" placeholder="Code Nasabah">
+				</div>
+				<div class="form-group">
+					<label> Name :</label>
 					<input type="text" class="form-control" name="username" value="" placeholder="Username">
 				</div>
 				<div class="form-group">
-					<label> Password :</label>
-					<input type="password" class="form-control" name="password" value="" placeholder="Password">
-				</div>
-				<div class="form-group">
-					<label> Level :</label>
-					<select name="level" class="form-control">
-						<option value="1">Admin</option>
-					</select>
+					<label> Email :</label>
+					<input type="email" class="form-control" name="email" placeholder="Masukan Email" required="">
 				</div>	
 		   </div>
 		  <div class="modal-footer">
@@ -106,28 +103,25 @@
 	    <!-- Modal content-->
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h4 class="modal-title">Edit user</h4>
+	        <h4 class="modal-title">Edit Nasabah</h4>
 	        <button type="button" class="close" data-dismiss="modal">&times;</button>
 	      </div>
 	      <div class="modal-body">
 	       
-		     <form action="proses_user.php?kode=2&id=" method="POST" class="form" accept-charset="utf-8">
+		     <form action="proses_nasabah.php?kode=2&id=" method="POST" class="form" accept-charset="utf-8">
 				<input style="display: none;" type="text" name="id" id="id" value="">
 				<div class="form-group">
-					<label> Username :</label>
+					<label> Code Nasabah :</label>
+					<input type="text" class="form-control" readonly="true" value="" id="code_nasabah" placeholder="Code Nasabah">
+				</div>
+				<div class="form-group">
+					<label> Name :</label>
 					<input type="text" class="form-control" name="username" value="" id="username" placeholder="Username">
 				</div>
 				<div class="form-group">
-					<label> Password :</label>
-					<input type="password" class="form-control" name="password" value="" id="password" placeholder="Password">
+					<label> Email :</label>
+					<input type="email" class="form-control" name="email" id="email" placeholder="Masukan Email" required="">
 				</div>
-				<div class="form-group" id="level">
-					<label> Level :</label>
-					<select name="level" class="form-control">
-						<option value="1">Admin</option>
-					</select>
-				</div>	
-				
 		   </div>
 		  <div class="modal-footer">
 		        <button type="submit" class="btn btn-primary">Edit</button>
@@ -163,7 +157,10 @@ $(".btnedit").click(function(){
         	keyboard : false,
   });
   $("#id").val($(this).closest('tr').children()[1].textContent);
-  $("#username").val($(this).closest('tr').children()[2].textContent);
-  $("#level").val($(this).closest('tr').children()[3].textContent);
+  $("#code_nasabah").val($(this).closest('tr').children()[2].textContent);
+  $("#username").val($(this).closest('tr').children()[3].textContent);
+  $("#email").val($(this).closest('tr').children()[4].textContent);
+
 });
 </script>
+

@@ -22,7 +22,7 @@
          
 	<div class="card">
 	  <div class="card-header">
-	    <button type="button"class="btn btn-success pull-right" data-toggle="modal" id="btntambah">Tambah Dokumen</button>
+	    <button type="button"class="btn btn-success pull-right" data-toggle="modal" id="btntambah">Insert Dokumen</button>
 	  </div>
 	  <!-- /.card-header -->
 	  <div class="card-body">
@@ -32,20 +32,27 @@
 					<tr>
 						<th>No</th>
 						<th style="display: none;">id</th>
-						<th>Kode Nasabah</th>
+						<th>Code Nasabah</th>
+						<th>Name</th>
 						<th>Option</th>
 					</tr>
 				</thead>
 				<tbody>
 				<?php 
 					$no = 1;
-					$sql = "SELECT * FROM tb_nasabah";
+					if ($_SESSION['level'] == 1) {
+						$sql = "SELECT a.*, b.kode_nasabah, b.username, b.email, b.id as idu FROM tb_nasabah a LEFT JOIN tb_user b ON a.user_id = b.id WHERE a.user_log = '$_SESSION[user_id]'";
+					}else{
+						$sql = "SELECT a.*, b.kode_nasabah, b.username, b.email, b.id as idu FROM tb_nasabah a LEFT JOIN tb_user b ON a.user_id = b.id";
+					}
+
 					$query  = mysqli_query($conn,$sql);
 					while ($data = mysqli_fetch_array($query)) { ?>
 					<tr>
 						<td><?php echo $no++; ?></td>
 						<td style="display: none;"><?php echo $data['id']; ?></td>
-						<td><?php echo $data['user_code']?></td>
+						<td><?php echo $data['kode_nasabah']?></td>
+						<td><?php echo $data['username']?></td>
 						<td>
 						<a href="home.php?link=men_dok_detail&idn=<?php echo $data['id']; ?>" class="btn btn-success btn-xs btnedit">Detail Data Nasabah</a>&nbsp
 						<a href="proses_dokumen.php?kode=2&id=<?php echo $data['id'];?>" class="btn btn-danger btn-xs" onclick="return confirm('Apakah Anda Yakin.. ?');" title="">Delete</a>
@@ -66,7 +73,7 @@
 	    <!-- Modal content-->
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h4 class="modal-title">Tambah Dokumen</h4>
+	        <h4 class="modal-title">Insert Dokumen</h4>
 	        <button type="button" class="close" data-dismiss="modal">&times;</button>
 	      </div>
 	      <div class="modal-body">
@@ -74,18 +81,18 @@
 		    	<input style="display: none;" type="text" name="id_user" id="id" value="<?php echo $_SESSION['user_id'] ?>">
 				<div class="form-group">
 					<label> Kode Nasabah :</label>
-					<input type="text" class="form-control" name="kode_nasabah" placeholder="Masukan Kode Nasabah" required="">
+					<select class="form-control" name="id_nasabah">
+						<option selected="" disabled="">~ Select Nasabah ~</option>
+						<?php 	
+					$sql = "SELECT * FROM tb_user WHERE level = 2";
+					$query  = mysqli_query($conn,$sql);
+					while ($data = mysqli_fetch_array($query)) { ?> ?>
+						<option value="<?php echo $data['id']; ?>"><?php echo $data['kode_nasabah'].' - '.$data['username'] ?></option>
+					<?php } ?>
+					</select>
 				</div><div class="form-group">
 					<label> NIK :</label>
 					<input type="number" class="form-control" name="nik" placeholder="Masukan NIK" required="">
-				</div>
-				<div class="form-group">
-					<label> Nama :</label>
-					<input type="text" class="form-control" name="user_name" placeholder="Masukan Nama" required="">
-				</div>
-				<div class="form-group">
-					<label> Email :</label>
-					<input type="email" class="form-control" name="user_email" placeholder="Masukan Email" required="">
 				</div>
 				<div class="form-group">
 					<label> Berkas :</label>
@@ -119,14 +126,4 @@ $(function(){
     $('#tb_user').DataTable();
 });
 
-$(".btnedit").click(function(){
-  $('#edit').modal({
-  	       	show : true,
-        	backdrop : 'static',
-        	keyboard : false,
-  });
-  $("#id").val($(this).closest('tr').children()[1].textContent);
-  $("#username").val($(this).closest('tr').children()[2].textContent);
-  $("#level").val($(this).closest('tr').children()[3].textContent);
-});
 </script>

@@ -2,10 +2,10 @@
 
 include "koneksi.php";
 
-  $username = $_POST['username'];
+  $email = $_POST['email'];
   $password = $_POST['password'];
 
-  $query = "SELECT * FROM tb_user WHERE username = '$username' AND password = md5('$password')";
+  $query = "SELECT * FROM tb_user WHERE email = '$email' AND password = md5('$password')";
 
   $sql = mysqli_query($conn,$query);
 
@@ -16,6 +16,7 @@ include "koneksi.php";
 
     // set session
     session_start();
+    $_SESSION["email"] = $data['email'];
     $_SESSION["username"] = $data['username'];
     $_SESSION["user_id"] = $data['id'];
     $_SESSION["level"] = $data['level'];

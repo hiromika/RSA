@@ -84,13 +84,14 @@ if (isset($_SESSION['username'])){
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="#" class="d-block"><?php echo $_SESSION["username"] ?></a>
+          <a href="#" class="d-block">Welcome <?php echo $_SESSION["username"] ?></a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <?php if ($_SESSION["level"] == 0) { ?>
+         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <a href="home.php?link=dashboard" class="nav-link active">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
@@ -104,6 +105,20 @@ if (isset($_SESSION['username'])){
               <i class="nav-icon far fa-file"></i>
               <p class="text">Data Nasabah</p>
             </a>
+          </li>
+          <li class="nav-header">Messaage</li>
+          <li class="nav-item">
+            <a href="home.php?link=nas_msg" class="nav-link">
+              <i class="nav-icon far fa-envelope"></i>
+              <p class="text">Messaage</p>
+            </a> 
+          </li>
+          <li class="nav-item">
+            <a href="home.php?link=rekap_msg" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
+              <p class="text">Report Messaage</p>
+            </a>
+          </li>
           </li>
           <li class="nav-header">Manage Data</li>
           <li class="nav-item">
@@ -119,6 +134,12 @@ if (isset($_SESSION['username'])){
                 <a href="home.php?link=men_user" class="nav-link">
                   <i class="far fa-user nav-icon"></i>
                   <p>User</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="home.php?link=men_nasabah" class="nav-link">
+                  <i class="far fa-user nav-icon"></i>
+                  <p>Nasabah</p>
                 </a>
               </li>
             </ul>
@@ -138,6 +159,98 @@ if (isset($_SESSION['username'])){
             </a>
           </li>
         </ul>
+        <?php }elseif ($_SESSION["level"] == 1) { ?>
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <a href="home.php?link=dashboard" class="nav-link active">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Dashboard
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <li class="nav-header">Repository</li>
+          <li class="nav-item">
+            <a href="home.php?link=men_dokumen" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
+              <p class="text">Data Nasabah</p>
+            </a>
+          </li>
+          <li class="nav-header">Messaage</li>
+          <li class="nav-item">
+            <a href="home.php?link=nas_msg" class="nav-link">
+              <i class="nav-icon far fa-envelope"></i>
+              <p class="text">Messaage</p>
+            </a>
+          </li>
+          </li>
+          <li class="nav-header">Manage Data</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-table"></i>
+              <p>
+                Manage Data
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="home.php?link=men_nasabah" class="nav-link">
+                  <i class="far fa-user nav-icon"></i>
+                  <p>Nasabah</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-header">Profile</li>
+          <li class="nav-item">
+            <a href="home.php?link=men_profile" class="nav-link">
+              <i class="nav-icon fas fa-sync"></i>
+              <p class="text">Change Password</p>
+            </a>
+          </li>  
+          <li class="nav-header">Logout</li>
+          <li class="nav-item">
+            <a href="proses_logout.php" class="nav-link">
+              <i class="nav-icon far fa-circle text-danger"></i>
+              <p class="text">Logout</p>
+            </a>
+          </li>
+        </ul>
+        <?php }else{ ?>
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <a href="home.php?link=nas_dashboard" class="nav-link active">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Dashboard
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <li class="nav-header">Messaage</li>
+          <li class="nav-item">
+            <a href="home.php?link=nas_msg" class="nav-link">
+              <i class="nav-icon far fa-envelope"></i>
+              <p class="text">Messaage Admin</p>
+            </a>
+          </li>
+          </li>
+          <li class="nav-header">Profile</li>
+          <li class="nav-item">
+            <a href="home.php?link=men_profile" class="nav-link">
+              <i class="nav-icon fas fa-sync"></i>
+              <p class="text">Change Password</p>
+            </a>
+          </li>  
+          <li class="nav-header">Logout</li>
+          <li class="nav-item">
+            <a href="proses_logout.php" class="nav-link">
+              <i class="nav-icon far fa-circle text-danger"></i>
+              <p class="text">Logout</p>
+            </a>
+          </li>
+        </ul>
+        <?php } ?>
+       
+
       </nav>
       <!-- /.sidebar-menu -->
     </div>
@@ -150,30 +263,87 @@ if (isset($_SESSION['username'])){
     <?php 
       if (isset($_GET['link'])) {
         $link = $_GET['link'];
-        switch ($link) {
-          case 'men_user':
-            include "manage_user.php";
-            break;  
-          case 'men_dokumen':
-            include "manage_dokumen.php";
-            break;  
-          case 'men_dok_detail':
-            include "manage_dokumen_detail.php";
-            break;  
-          case 'men_profile':
-            include "manage_profile.php";
-            break; 
-          default:
-            include "dashboard.php";
-            break;
+        if ($_SESSION["level"] == 0) {
+          switch ($link) {
+            case 'men_user':
+              include "manage_user.php";
+              break;   
+            case 'men_nasabah':
+              include "manage_nasabah.php";
+              break;  
+            case 'men_dokumen':
+              include "manage_dokumen.php";
+              break;  
+            case 'men_dok_detail':
+              include "manage_dokumen_detail.php";
+              break;  
+            case 'men_profile':
+              include "manage_profile.php";
+              break;
+            case 'nas_msg':
+              include "nas_msg.php";
+              break; 
+            case 'nas_msg_detiail':
+              include "nas_msg_detiail.php";
+              break;
+            case 'rekap_msg':
+              include "rekap_msg.php";
+              break;
+            default:
+              include "dashboard.php";
+              break;
+          }
+        }elseif ($_SESSION["level"] == 1) {
+          switch ($link) {  
+            case 'men_nasabah':
+              include "manage_nasabah.php";
+              break;  
+            case 'men_dokumen':
+              include "manage_dokumen.php";
+              break;  
+            case 'men_dok_detail':
+              include "manage_dokumen_detail.php";
+              break;  
+            case 'men_profile':
+              include "manage_profile.php";
+              break; 
+            case 'nas_msg':
+              include "nas_msg.php";
+              break; 
+            case 'nas_msg_detiail':
+              include "nas_msg_detiail.php";
+              break;
+            default:
+              include "dashboard.php";
+              break;
+          }
+        }else{
+          switch ($link) {
+            case 'men_profile':
+              include "manage_profile.php";
+              break; 
+            case 'nas_msg':
+              include "nas_msg.php";
+              break; 
+            case 'nas_msg_detiail':
+              include "nas_msg_detiail.php";
+              break;
+            case 'nas_dashboard':
+              include "nas_dashboard.php";
+              break; 
+            default:
+              include "nas_dashboard.php";
+              break;
+          }
         }
+
       }
     ?>
   
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2014-2021 <a href="">BTN</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 3.1.0
