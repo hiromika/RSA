@@ -28,7 +28,6 @@
       <div class="table-responsive">
           <?php 
           include "rsa.php";
-          if ($_SESSION['level'] == 1 or $_SESSION['level'] == 0) {
             $sql = "SELECT 
             a.*, 
             b.username as s_user, 
@@ -36,18 +35,7 @@
             FROM tb_msg a 
             LEFT JOIN tb_user b ON a.id_send = b.id 
             LEFT JOIN tb_user c ON a.id_recive = c.id  
-            WHERE a.id_send = '$_SESSION[user_id]' OR a.id_recive = '$_SESSION[user_id]' 
-            AND a.idm = '$_GET[idm]'";
-          }else{
-            $sql = "SELECT 
-            a.*, 
-            b.username as s_user, 
-            c.username as r_user
-            FROM tb_msg a 
-            LEFT JOIN tb_user b ON a.id_send = b.id 
-            LEFT JOIN tb_user c ON a.id_recive = c.id  
-            WHERE a.id_send = '$_SESSION[user_id]' AND a.idm = '$_GET[idm]' OR a.id_recive = '$_SESSION[user_id]' AND a.idm = '$_GET[idm]'";
-          }
+            WHERE idm = $_GET[idm]";
             $query  = mysqli_query($conn,$sql);
             if (mysqli_num_rows($query) > 0) {
             $data = mysqli_fetch_array($query) ?>
@@ -58,13 +46,7 @@
                   </tr>
                   <tr>
                     <th width="30%">From</th>
-                    <td><?php
-                      if ($_SESSION['level'] == 1 or $_SESSION['level'] == 0) {  
-                        echo ($data['id_send'] == $_SESSION['user_id'])?"Me to $data[r_user]":"$data[s_user]";   
-                      }else{  
-                        echo ($data['id_send'] == $_SESSION['user_id'])?"Me to $data[r_user]":"$data[s_user]";  
-                      } ?>
-                    </td>
+                    <td><?php echo ($data['id_send'] == $_SESSION['user_id'])?"Me to $data[r_user]":"$data[s_user]";  ?></td>
                   </tr>
                   <tr>
                     <th>Subject</th>
